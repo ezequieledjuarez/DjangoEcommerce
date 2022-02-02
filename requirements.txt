@@ -1,0 +1,4 @@
+django==4.0.2
+pillow==9.0.0
+django-environ==0.8.1
+pyscopg2-binary==2.8.3
