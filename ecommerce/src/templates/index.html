@@ -1,5 +1,15 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% block content %}
-hola mundo
+
+<div  class="site-blocks-cover" style="background-image: url({% static 'images/hero.jpg' %});" data-aos="fade"> 
+    <div class="container">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 pt-5 pt-md-0"></div>
+            </div>
+    </div>
+
+</div>
+
 {% endblock content %}
