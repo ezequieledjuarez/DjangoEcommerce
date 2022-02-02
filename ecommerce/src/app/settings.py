@@ -1,9 +1,10 @@
-
 from pathlib import Path
 import os
 import environ
 
 env = environ.Env()
+
+environ.Env().read_env()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 MIDDLEWARE = [
@@ -37,7 +39,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'ecommerce.urls'
+ROOT_URLCONF = 'src.app.urls'
 
 TEMPLATES = [
     {
@@ -55,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'ecommerce.wsgi.application'
+WSGI_APPLICATION = 'src.app.wsgi.application'
 
 
 # Database
@@ -140,3 +142,4 @@ if DEBUG is False:
             'PORT': '',
         }
     }
+    
