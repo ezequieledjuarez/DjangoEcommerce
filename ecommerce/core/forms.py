@@ -9,6 +9,6 @@ class ContactForm(forms.Form):
         'placeholder': "Email"
     }))
 
-    mensaje = forms.CharField(widget=forms.TextInput(attrs={
+    message = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': "Mensaje"
     }))

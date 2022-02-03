@@ -27,11 +27,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'src',
     'crispy_forms',
-
-    'core'
+    'cart',
+    
+    'core',
 
 ]
+
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+NOTIFY_EMAIL = env('NOTIFY_EMAIL')
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
