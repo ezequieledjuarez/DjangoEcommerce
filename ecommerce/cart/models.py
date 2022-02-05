@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.db.models.signals import pre_save
+from django.utils.text import slugify
+from django.urls import reverse
+ 
 User = get_user_model()
 
 class Address(models.Model):
@@ -22,27 +25,38 @@ class Address(models.Model):
     class Meta:
         verbose_name_plural='Addresses'
 
+class ColorVariation(models.Model):
+    name=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     title=models.CharField(max_length=150)
-    slug=models.SlugField()
+    slug=models.SlugField(unique=True)
+    image=models.ImageField(upload_to='product_images')
     description=models.TextField()
     created=models.DateTimeField(auto_now_add=True)
     update=models.DateTimeField(auto_now=True)
     active=models.BooleanField(default=False)
+    available_color=models.ManyToManyField(ColorVariation)
 
     def __str__(self):
         return self.title
 
+    def get_absolute_url(self):
+        return reverse("cart:product-detail", kwargs={'slug': self.slug})
+
 class OrderItem(models.Model):
     order=models.ForeignKey("Order", related_name='items', on_delete=models.CASCADE)
-    products=models.ForeignKey(Product, on_delete=models.CASCADE)
+    product=models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity=models.PositiveIntegerField(default=1)
-
+    color=models.ForeignKey(ColorVariation,on_delete=models.CASCADE)
     def __str__(self):
         return f"{self.quantity} x {self.product.title}"
 
 class Order(models.Model):
-    user=models.ForeignKey(User, on_delete=models.CASCADE)
+    user=models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
     start_date_created=models.DateTimeField(auto_now_add=True)
     ordered_date=models.DateTimeField(blank=True, null=True)
     ordered=models.BooleanField(default=False)
@@ -75,3 +89,9 @@ class Payment(models.Model):
     @property
     def reference_number(self):
         return f"Payment-{self.order}-{self.pk}"
+
+def pre_save_product_receiver(sender, instance, *args, **kwargs):
+    if not instance.slug:
+        instance.slug=slugify(instance.title)
+
+pre_save.connect(pre_save_product_receiver, sender=Product)
