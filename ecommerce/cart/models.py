@@ -31,6 +31,12 @@ class ColorVariation(models.Model):
     def __str__(self):
         return self.name
 
+class SizeVariation(models.Model):
+    name=models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
+
 class Product(models.Model):
     title=models.CharField(max_length=150)
     slug=models.SlugField(unique=True)
@@ -39,7 +45,8 @@ class Product(models.Model):
     created=models.DateTimeField(auto_now_add=True)
     update=models.DateTimeField(auto_now=True)
     active=models.BooleanField(default=False)
-    available_color=models.ManyToManyField(ColorVariation)
+    available_colors=models.ManyToManyField(ColorVariation)
+    available_sizes=models.ManyToManyField(SizeVariation)
 
     def __str__(self):
         return self.title
@@ -51,7 +58,9 @@ class OrderItem(models.Model):
     order=models.ForeignKey("Order", related_name='items', on_delete=models.CASCADE)
     product=models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity=models.PositiveIntegerField(default=1)
-    color=models.ForeignKey(ColorVariation,on_delete=models.CASCADE)
+    color = models.ForeignKey(ColorVariation, on_delete=models.CASCADE)
+    size = models.ForeignKey(SizeVariation, on_delete=models.CASCADE)
+
     def __str__(self):
         return f"{self.quantity} x {self.product.title}"
 
