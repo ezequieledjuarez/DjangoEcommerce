@@ -41,7 +41,7 @@
                                     <small> Size: {{ item.size.name }}</small>
                                     <small> Color: {{ item.color.name }}</small>
                                 </td>
-                                <td>0</td>
+                                <td>${{ item.product.get_price }}</td>
                                 <td>
                                     <div class="input-group mb-3" styles="max-width: 120px;">
                                         <div class="input-group-pretend">
@@ -53,20 +53,20 @@
                                         value="{{item.quantity}}"
                                         >
                                         <div class="input-group-append">
-                                            <a href="#" class="btn btn-outline-primary">
+                                            <a href="{% url 'cart:increase-quantity' item.id %}" class="btn btn-outline-primary">
                                                 &plus;
                                             </a>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    $0
+                                    $ {{ item.get_total_item_price }}
                                 </td>
                                 <td>
                                     <a href="#" class="btn btn-primary btn-sm">X</a>
                                 </td>
                             </tr>
-                            {% endfor%}
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>

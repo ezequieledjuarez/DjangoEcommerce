@@ -1,10 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
 from .utils import get_or_set_order_session
-from .models import Product,OrderItem,Order
+from .models import Product,OrderItem,Order, OrderItem
 from .forms import AddToCartForm
 
 class ProductListView(generic.ListView):
@@ -57,9 +57,18 @@ class ProductDetailView(generic.FormView):
         context['product'] = self.get_object()
         return context
 
+
 class CartView(generic.TemplateView):
-    template_name='cart/cart.html'
+    template_name = 'cart/cart.html'
+
     def get_context_data(self, *args, **kwargs):
-        context=super(CartView, self).get_context_data(**kwargs)
-        context["order"]= get_or_set_order_session(self.request)
+        context = super(CartView, self).get_context_data(**kwargs)
+        context["order"] = get_or_set_order_session(self.request)
         return context
+
+class IncreaseQuantityView(generic.View):
+    def get(self, request, *args, **kwargs):
+        order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
+        order_item.quantity += 1
+        order_item.save()
+        return redirect("cart:summary")
