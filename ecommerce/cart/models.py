@@ -13,7 +13,7 @@ class Address(models.Model):
     )
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     address_line_1=models.CharField(max_length=150)
-    addres_line_2=models.CharField(max_length=150)
+    address_line_2=models.CharField(max_length=150)
     city=models.CharField(max_length=100)
     zip_code=models.CharField(max_length=100)
     address_type=models.CharField(max_length=1, choices=ADDRESS_CHOICES)
