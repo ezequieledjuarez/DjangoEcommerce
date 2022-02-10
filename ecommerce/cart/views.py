@@ -19,7 +19,7 @@ class ProductDetailView(generic.FormView):
         return get_object_or_404(Product, slug=self.kwargs["slug"])
 
     def get_success_url(self):
-        return reverse("home")
+        return reverse("cart:summary")
 
 
     def get_form_kwargs(self):
@@ -71,4 +71,22 @@ class IncreaseQuantityView(generic.View):
         order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
         order_item.quantity += 1
         order_item.save()
+        return redirect("cart:summary")
+
+class DecreaseQuantityView(generic.View):
+    def get(self, request, *args, **kwargs):
+        order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
+
+        if order_item.quantity <=1:
+            order_item.delete()
+            return redirect("cart:summary")
+        else:
+            order_item.quantity -= 1
+            order_item.save()
+            return redirect("cart:summary")
+
+class RemoveFromCartView(generic.View):
+    def get(self, request, *args, **kwargs):
+        order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
+        order_item.delete()
         return redirect("cart:summary")
