@@ -82,6 +82,52 @@
             </div>
         
         </div>
+        {% if order.items.count > 0 %}
+            <div class="row">
+                <div class="com-md-6">
+                    <div class="row mb-5"></div>
+                    <div class="col-md-12">
+                        <a class="btn btn-outline-primary btn-sm btn-block" href="{ % url: 'cart:product-list %}">
+                            Continue shopping</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 pl-5">
+                <div class="row justify-content-end">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12 text-right border-bottom mb-5">
+                                <div class="text-black h4 text-uppercase">Cart totals</div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <span class="text-black">Subtotal</span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class="text-black">${{order.get_subtotal}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="row mb-5">
+                            <div class="col-md-6">
+                                <span class="text-black">Total</span>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class="text-black">${{order.get_total}}</strong>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                               <a href="{% url 'cart:checkout' %}" class="btn btn-warning btn-large py-3 btn-block">Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
     </div>
 </div>
 

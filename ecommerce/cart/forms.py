@@ -17,3 +17,5 @@ class AddToCartForm(forms.ModelForm):
         self.fields['color'].queryset= product.available_colors.all()
         self.fields['size'].queryset= product.available_sizes.all()
 
+class AdressForm(forms.Form):
+    pass

@@ -5,7 +5,7 @@ from django.urls import reverse
 
 from .utils import get_or_set_order_session
 from .models import Product,OrderItem,Order, OrderItem
-from .forms import AddToCartForm
+from .forms import AddToCartForm,AdressForm
 
 class ProductListView(generic.ListView):
     template_name='cart/product_list.html'
@@ -39,7 +39,7 @@ class ProductDetailView(generic.FormView):
        
         if item_filter.exists():
             item = item_filter.first()
-            item.quantity = int(form.cleaned_data['quantity'])
+            item.quantity += int(form.cleaned_data['quantity'])
             item.save()
 
         else:
@@ -90,3 +90,12 @@ class RemoveFromCartView(generic.View):
         order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
         order_item.delete()
         return redirect("cart:summary")
+
+class CheckoutView(generic.FormView):
+    template_name='cart/checkout.html'
+    form_class=AdressForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CheckoutView, self).get_context_data(**kwargs)
+        context["order"] = get_or_set_order_session(self.request)
+        return context
