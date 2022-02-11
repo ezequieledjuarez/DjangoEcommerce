@@ -1,12 +1,15 @@
+import datetime
+import json
 from django.shortcuts import redirect, render
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
 from django.conf import settings
+from django.http import JsonResponse
 
 from .utils import get_or_set_order_session
-from .models import Product,OrderItem,Order, OrderItem, Address
+from .models import Product,OrderItem,Order, OrderItem, Address, Payment
 from .forms import AddToCartForm,AddressForm
 
 class ProductListView(generic.ListView):
@@ -154,6 +157,22 @@ class PaymentView(generic.TemplateView):
         context["order"]=get_or_set_order_session(self.request)
         context["CALLBACK_URL"]= reverse("cart:thank-you")
         return context
+
+class ConfirmOrderView(generic.View):    
+    def post(self, request, *args, **kwargs):
+        order=get_or_set_order_session(request)
+        body= json.loads(request.body)
+        payment = Payment.objects.create(
+            order=order,
+            succesful=True,
+            raw_response=json.dumps(body),
+            amount=float(body["purchase_units"][0]["amount"]["value"]),
+            payment_method='PayPal'
+        ),
+        order.ordered=True
+        order.ordered_date=datetime.date.today()
+        order.save()
+        return JsonResponse({"data": "Success"})
 
 class ThankYouView(generic.TemplateView):
     template_name='cart/thanks.html'

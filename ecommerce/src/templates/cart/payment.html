@@ -1,10 +1,67 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<style>
+.lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: 8px;
+  border: 8px solid #255;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: #fff transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+</style>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div id="paypal-button-container"></div>
+                <div class="alert alert-success" role="alert" id="alertSuccess" style="display:none;" >Pudimos procesar tu pago con éxito.
+
+                </div>
+                <div class="alert alert-danger" role="alert" id="alertFailure" style="display:none;">No pudimos procesar tu pago :(. Por favor volve a intentar.
+
+                </div>
+                <div class="text-center py-3">
+                    <div id="loader" class="lds-ring" style="margin:auto; display:none;">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div id="paymentInfo">
+                    <p>Compra total: $ {{order.get_total}</p>
+                    <h4>Selecciona un método de pago</h4>
+                    <div id="paypal-button-container"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -16,11 +73,39 @@
 ></script>
 
     <script>
+    const loader=document.getElementById('loader');
+    const paymentInfo=document.getElementById('paymentInfo');
+
+    function toggleLoader(on){
+        loader.style.display= on === true ? "block" : none;
+        paymentInfo.style.display = on === true ? "none" : "block"; 
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
 
         function sendOrderConfirmed(){
-            return fetch("{% url 'cart:confirm-order %}", {
+            return fetch("{ url 'cart:confirm-order %%}", {
                 method: "post",
-                body: Json.stringify(details)
+                body: Json.stringify(details),
+                headers:{
+                    "Content-Type":"application/json",
+                    "X-CSRFToken":csrftoken
+                }
             })
         }
 
@@ -35,13 +120,22 @@
                 });
             },
             onApprove: function(data, actions) {
+                toggleLoader(true);
                 return actions.order.capture().then(function(details) {
-                    sendOrderConfirmed().then(res => {
+                    sendOrderConfirmed(details).then(res => {
+                        const alterSuccess = document.getElementById('alterSuccess');
+                        alertSuccess.style.display="block"
+                        toggleLoader(false);
                         setTimeout(function(){  
                             window.location.replace("{{  CALLBACK_URL }}")
                         }, 3000);
-                    });
-                });
+                    })
+                })
+                .catch(err => {
+                    const alterFailure = document.getElementById('alterFailure');
+                    alertFailure.style.display="block";
+                }).finally(()=> toggleLoader(false));
+               
             }         
         }).render('#paypal-button-container');
     </script>

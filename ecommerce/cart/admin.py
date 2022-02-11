@@ -5,7 +5,8 @@ from .models import (
     OrderItem, 
     ColorVariation, 
     SizeVariation,
-    Address)
+    Address,
+    Payment)
 
 class AddressAdmin(admin.ModelAdmin):
     list_display=[
@@ -22,4 +23,5 @@ admin.site.register(OrderItem)
 admin.site.register(ColorVariation)
 admin.site.register(SizeVariation)
 admin.site.register(Address, AddressAdmin)
+admin.site.register(Payment)
 
