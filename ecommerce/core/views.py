@@ -7,6 +7,18 @@ from django.urls import reverse
 from .forms import ContactForm
 
 from django.conf import settings
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from models import Order
+class ProfileView(LoginRequiredMixin, generic.TemplateView):
+    template_name='profile.html'
+
+    def get_context_data(self,*args, **kwargs):
+        context=super(ProfileView, self).get_context_data(**kwargs)
+        context.update({
+            "orders": Order.objects.filter(user=self.request.user, ordered=True)
+        })
+        return context
 
 class HomeView(generic.TemplateView):
     template_name = 'index.html'
