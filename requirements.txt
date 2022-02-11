@@ -1,4 +1,6 @@
 django==4.0.2
 pillow==9.0.0
 django-environ==0.8.1
-pyscopg2-binary==2.8.3
+django-crispy-forms==1.14.0
+django-allauth==0.48.0
+psycopg2-binary==2.9.3
