@@ -3,6 +3,7 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.contrib import messages
+from django.conf import settings
 
 from .utils import get_or_set_order_session
 from .models import Product,OrderItem,Order, OrderItem, Address
@@ -97,7 +98,7 @@ class CheckoutView(generic.FormView):
     form_class=AddressForm
 
     def get_success_url(self):
-        return reverse("home") 
+        return reverse("cart:payment") 
 
     def form_valid(self, form):
         order=get_or_set_order_session(self.request)
@@ -144,3 +145,15 @@ class CheckoutView(generic.FormView):
         kwargs=super(CheckoutView, self).get_form_kwargs()
         kwargs["user_id"]=self.request.user.id
         return kwargs
+
+class PaymentView(generic.TemplateView):
+    template_name='cart/payment.html'
+    def get_context_data(self, *args, **kwargs):
+        context = super(PaymentView, self).get_context_data(**kwargs)
+        context["PAYPAL_CLIENT_ID"] = settings.PAYPAL_CLIENT_ID
+        context["order"]=get_or_set_order_session(self.request)
+        context["CALLBACK_URL"]= reverse("cart:thank-you")
+        return context
+
+class ThankYouView(generic.TemplateView):
+    template_name='cart/thanks.html'
