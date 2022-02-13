@@ -127,7 +127,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 LANGUAGE_CODE = 'es-AR'
 
-TIME_ZONE = 'UTC-3'
+TIME_ZONE = 'America/Argentina/Buenos_Aires'
 
 USE_I18N = True
 
