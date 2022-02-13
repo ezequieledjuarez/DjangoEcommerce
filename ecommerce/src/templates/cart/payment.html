@@ -58,7 +58,7 @@
                 </div>
                 
                 <div id="paymentInfo">
-                    <p>Compra total: $ {{order.get_total}</p>
+                    <p>Compra total: $ {{order.get_total}}</p>
                     <h4>Selecciona un método de pago</h4>
                     <div id="paypal-button-container"></div>
                 </div>
@@ -101,7 +101,7 @@
         function sendOrderConfirmed(){
             return fetch("{ url 'cart:confirm-order %%}", {
                 method: "post",
-                body: Json.stringify(details),
+                body: JSON.stringify(paymentInfo),
                 headers:{
                     "Content-Type":"application/json",
                     "X-CSRFToken":csrftoken
@@ -132,6 +132,7 @@
                     })
                 })
                 .catch(err => {
+                    console.log(err)
                     const alterFailure = document.getElementById('alterFailure');
                     alertFailure.style.display="block";
                 }).finally(()=> toggleLoader(false));

@@ -6,9 +6,9 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12 mb-0">
-                <a href = {% url 'home' %}>Home</a>
+                <a href = {% url 'home' %}>Inicio</a>
                 <span class="mx-2 mb-0">/</span>
-                <strong class="text-block">Cart</strong>
+                <strong class="text-block">Carrito</strong>
             </div>
         </div>
     </div>
@@ -22,23 +22,23 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Image</th>
-                                <th>Product</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
+                                <th>Imagen</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
                                 <th>Total</th>
-                                <th>Actions</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for item in order.items.all %}
                             <tr>
-                                <td = class="product-thumbnail"> 
+                                <td class="product-thumbnail"> 
                                     <img src="{{ item.product.image.url }}" class="img-fluid">
                                 </td>
                                 <td class="product-name">
                                     <h2 class="h5 text-black"> {{ item.product.title }}</h2>
-                                    <small> Size: {{ item.size.name }}</small>
+                                    <small> Tamaño: {{ item.size.name }}</small>
                                     <small> Color: {{ item.color.name }}</small>
                                 </td>
                                 <td>${{ item.product.get_price }}</td>
@@ -69,9 +69,9 @@
                             {% empty %}
                             <tr>
                                 <td colspan="6">
-                                    There are no items in your cart. 
-                                    <a href="{% url 'cart:product-list' %}">
-                                        Continue shopping.
+                                    No tenes productos en tu carrito.
+                                    <a href="{ % url: 'cart:product-list' %}">
+                                        Segui comprando.
                                     </a>
                                 </td>
                             </tr>
@@ -87,7 +87,7 @@
                 <div class="com-md-6">
                     <div class="row mb-5"></div>
                     <div class="col-md-12">
-                        <a class="btn btn-outline-primary btn-sm btn-block" href="{ % url: 'cart:product-list %}">
+                        <a class="btn btn-outline-primary btn-sm btn-block" href="{% url 'cart:product-list' %}">
                             Continue shopping</a>
                     </div>
                 </div>
@@ -121,7 +121,15 @@
 
                         <div class="row">
                             <div class="col-md-12">
+                            {% if request.user.is_authenticated %}
                                <a href="{% url 'cart:checkout' %}" class="btn btn-warning btn-large py-3 btn-block">Checkout</a>
+                               {% else %}
+                               <h3>Para continuar con la compra ingresa a tu cuenta o registrate</h3>
+                               <div class="btn-toolbar">
+                                    <a href="{% url 'account_login' %}" class="btn btn-primary btn-sm mr-3" role="button">Login</a>
+                                    <a href="{% url 'account_signup' %}" class="btn btn-danger btn-sm mr-3" role="button">Registro</a>
+                               </div>
+                            {% endif %}
                             </div>
                         </div>
                     </div>

@@ -29,12 +29,12 @@
                                         <a href="{%url 'cart:order-detail' order.pk %}"><td># {{order.reference_number}}</td></a>
                                         <td>{{order.ordered_data}}</td>
                                         <td>$ {{ordered.get_total}}</td>
-                                        <td> {% if order.ordered %} Pago {% else %} No pago</td>
+                                        <td> {% if order.ordered %} Pago {% else %} No pago {% endif %}</td>
                                     </tr>
                                     {% empty %}
                                     <td colspan="4">Todavía no realizaste ninguna compra, ¿Que estás esperando?</td>
                                     <a href="{% url 'cart:product-list' %}">Hace click acá y empeza a comprar</a>
-                                    {% end for%}
+                                    {% endfor%}
                                 </tbody>
                             </thead>
                         </div>
