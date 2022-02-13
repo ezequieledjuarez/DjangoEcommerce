@@ -3,11 +3,11 @@
 {% load i18n %}
 {% load account socialaccount %}
 
-{% block head_title %}{% trans "Sign In" %}{% endblock %}
+{% block head_title %}{% trans "Inicia sesión" %}{% endblock %}
 
 {% block content %}
 <div class="container">
-  <h1>{% trans "Sign In" %}</h1>
+  <h1>{% trans "Inicia sesión" %}</h1>
 
   {% get_providers as socialaccount_providers %}
 
@@ -29,8 +29,8 @@
   {% include "socialaccount/snippets/login_extra.html" %}
 
   {% else %}
-  <p>{% blocktrans %}If you have not created an account yet, then please
-  <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+  <p>{% blocktrans %}Si no tenes una cuenta, registrate en 2 simples pasos.
+  <a href="{{ signup_url }}"></a>{% endblocktrans %}</p>
   {% endif %}
 
   <form class="login" method="POST" action="{% url 'account_login' %}">
@@ -39,9 +39,9 @@
     {% if redirect_field_value %}
     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
     {% endif %}
-    <button class="primaryAction btn btn-primary" type="submit">{% trans "Sign In" %}</button>
+    <button class="primaryAction btn btn-primary" type="submit">{% trans "Iniciar sesión" %}</button>
     <br>
-    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+    <a class="button secondaryAction" href="{% url 'account_reset_password' %}">{% trans "¿Olivdaste tu contraseña?" %}</a>
   </form>
 </div>
 {% endblock %}
