@@ -9,7 +9,8 @@ from .forms import ContactForm
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from models import Order
+from cart.models import Order
+
 class ProfileView(LoginRequiredMixin, generic.TemplateView):
     template_name='profile.html'
 
