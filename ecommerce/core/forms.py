@@ -1,7 +1,7 @@
 from django import forms
 
 class ContactForm(forms.Form):
-    name = forms.CharField(max_length=50, widget=forms.TextInput(attrs={
+    nombre = forms.CharField(max_length=50, widget=forms.TextInput(attrs={
         'placeholder': "Nombre"
     }))
 
@@ -9,6 +9,6 @@ class ContactForm(forms.Form):
         'placeholder': "Email"
     }))
 
-    message = forms.CharField(widget=forms.TextInput(attrs={
+    mensaje = forms.CharField(widget=forms.TextInput(attrs={
         'placeholder': "Mensaje"
     }))

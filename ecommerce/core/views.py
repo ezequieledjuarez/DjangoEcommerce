@@ -35,15 +35,15 @@ class ContactView(generic.FormView):
         messages.info(
             self.request,"Recibimos tu mensaje")
         
-        name = form.cleaned_data.get('name')
+        nombre = form.cleaned_data.get('nombre')
         email = form.cleaned_data.get('email')
-        message = form.cleaned_data.get('message')
+        mensaje = form.cleaned_data.get('mensaje')
 
         full_message = f"""
-            Mensaje recibido de {name}, {email}
+            Mensaje recibido de {nombre}, {email}
             ____________________________________
 
-            {message}
+            {mensaje}
         """
         send_mail(
             subject="Mensaje recibido",
