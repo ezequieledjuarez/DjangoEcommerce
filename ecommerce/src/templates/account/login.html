@@ -29,8 +29,8 @@
   {% include "socialaccount/snippets/login_extra.html" %}
 
   {% else %}
-  <p>{% blocktrans %}Si no tenes una cuenta, registrate en 2 simples pasos.
-  <a href="{{ signup_url }}"></a>{% endblocktrans %}</p>
+  <p>{% blocktrans %}Si no tenes una cuenta
+  <a href="{{ signup_url }}">registrate</a>{% endblocktrans %}, en 2 simples pasos.</p>
   {% endif %}
 
   <form class="login" method="POST" action="{% url 'account_login' %}">
