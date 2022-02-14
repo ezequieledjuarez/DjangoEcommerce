@@ -12,15 +12,15 @@ class Address(models.Model):
         ('S','Shipping'),
     )
     user=models.ForeignKey(User, on_delete=models.CASCADE)
-    address_line_1=models.CharField(max_length=150)
-    address_line_2=models.CharField(max_length=150)
-    city=models.CharField(max_length=100)
-    zip_code=models.CharField(max_length=100)
-    address_type=models.CharField(max_length=1, choices=ADDRESS_CHOICES)
+    direccion_1=models.CharField(max_length=150)
+    direccion_2=models.CharField(max_length=150)
+    ciudad=models.CharField(max_length=100)
+    codigo_postal=models.CharField(max_length=100)
+    tipo_de_direccion=models.CharField(max_length=1, choices=ADDRESS_CHOICES)
     default=models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.address_line_1},{self.address_line_2},{self.city},{self.zip_code} "
+        return f"{self.direccion_1},{self.direccion_2},{self.ciudad},{self.codigo_postal} "
 
     class Meta:
         verbose_name_plural='Addresses'
@@ -81,10 +81,10 @@ class Order(models.Model):
     ordered_date=models.DateTimeField(blank=True, null=True)
     ordered=models.BooleanField(default=False)
 
-    billing_address=models.ForeignKey(
-        Address, related_name='billing_address', blank=True, null=True, on_delete=models.SET_NULL)
-    shipping_address=models.ForeignKey(
-        Address, related_name='shipping_address', blank=True, null=True, on_delete=models.SET_NULL)
+    direccion_de_entrega=models.ForeignKey(
+        Address, related_name='direccion_de_entrega', blank=True, null=True, on_delete=models.SET_NULL)
+    diraccion_de_pago=models.ForeignKey(
+        Address, related_name='direccion_de_pago', blank=True, null=True, on_delete=models.SET_NULL)
     
     def __str__(self):
         return self.reference_number

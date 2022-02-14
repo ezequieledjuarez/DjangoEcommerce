@@ -22,21 +22,21 @@ class AddToCartForm(forms.ModelForm):
 
 class AddressForm(forms.Form):
     
-    shipping_address_line_1 = forms.CharField(required=False)
-    shipping_address_line_2 = forms.CharField(required=False)
-    shipping_zip_code = forms.CharField(required=False)
-    shipping_city = forms.CharField(required=False)
+    direccion_de_entrega_1 = forms.CharField(required=False)
+    direccion_de_entrega_2 = forms.CharField(required=False)
+    codigo_postal = forms.CharField(required=False)
+    ciudad = forms.CharField(required=False)
 
-    billing_address_line_1 = forms.CharField(required=False)
-    billing_address_line_2 = forms.CharField(required=False)
-    billing_zip_code = forms.CharField(required=False)
-    billing_city = forms.CharField(required=False)
+    direccion_de_pago_1 = forms.CharField(required=False)
+    direccion_de_pago_2 = forms.CharField(required=False)
+    codigo_postal = forms.CharField(required=False)
+    ciudad = forms.CharField(required=False)
 
-    selected_shipping_address = forms.ModelChoiceField(
+    direccion_de_entrega_seleccionada = forms.ModelChoiceField(
         Address.objects.none(), required=False
     )
 
-    selected_billing_address = forms.ModelChoiceField(
+    direccion_de_pago_seleccionada = forms.ModelChoiceField(
         Address.objects.none(), required=False
     )
 
@@ -46,41 +46,41 @@ class AddressForm(forms.Form):
 
         user = User.objects.get(id=user_id)
 
-        shipping_address_qs = Address.objects.filter(
+        direccion_de_entrega_qs = Address.objects.filter(
             user=user,
-            address_type='S'
+            tipo_de_direccion='S'
         )
 
-        billing_address_qs = Address.objects.filter(
+        direccion_de_pago_qs = Address.objects.filter(
             user=user,
-            address_type='B'
+            tipo_de_direccion='B'
         )
 
-        self.fields['selected_shipping_address'].queryset = shipping_address_qs
-        self.fields['selected_billing_address'].queryset = billing_address_qs
+        self.fields['direccion_de_entrega_seleccionada'].queryset = direccion_de_entrega_qs
+        self.fields['direccion_de_pago_seleccionada'].queryset = direccion_de_pago_qs
 
 
     def clean(self):
         data = self.cleaned_data
 
-        selected_shipping_address = data.get('selected_shipping_address', None)
-        if selected_shipping_address is None:
-            if not data.get('shipping_address_line_1', None):
-                self.add_error("shipping_address_line_1", "Please fill in this field")
-            if not data.get('shipping_address_line_2', None):
-                self.add_error("shipping_address_line_2", "Please fill in this field")
-            if not data.get('shipping_zip_code', None):
-                self.add_error("shipping_zip_code", "Please fill in this field")
-            if not data.get('shipping_city', None):
-                self.add_error("shipping_city", "Please fill in this field")
+        direccion_de_entrega = data.get('direccion_de_entrega_seleccionada', None)
+        if direccion_de_entrega is None:
+            if not data.get('direccion_de_entrega_1', None):
+                self.add_error("direccion_de_entrega_1", "Please fill in this field")
+            if not data.get('direccion_de_entrega_2', None):
+                self.add_error("direccion_de_entrega_2", "Please fill in this field")
+            if not data.get('codigo_postal', None):
+                self.add_error("codigo_postal", "Please fill in this field")
+            if not data.get('ciudad', None):
+                self.add_error("ciudad", "Please fill in this field")
 
-        selected_billing_address = data.get('selected_billing_address', None)
-        if selected_billing_address is None:
-            if not data.get('billing_address_line_1', None):
-                self.add_error("billing_address_line_1", "Please fill in this field")
-            if not data.get('billing_address_line_2', None):
-                self.add_error("billing_address_line_2", "Please fill in this field")
-            if not data.get('billing_zip_code', None):
-                self.add_error("billing_zip_code", "Please fill in this field")
-            if not data.get('billing_city', None):
-                self.add_error("billing_city", "Please fill in this field")
+        direccion_de_pago = data.get('direccion_de_pago_seleccionada', None)
+        if direccion_de_pago is None:
+            if not data.get('direccion_de_pago_1', None):
+                self.add_error("direccion_de_pago_1", "Please fill in this field")
+            if not data.get('direccion_de_pago_2', None):
+                self.add_error("direccion_de_pago_2", "Please fill in this field")
+            if not data.get('codigo_postal', None):
+                self.add_error("codigo_postal", "Please fill in this field")
+            if not data.get('ciudad', None):
+                self.add_error("ciudad", "Please fill in this field")

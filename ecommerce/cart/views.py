@@ -106,36 +106,36 @@ class CheckoutView(generic.FormView):
 
     def form_valid(self, form):
         order=get_or_set_order_session(self.request)
-        selected_shipping_address=form.cleaned_data.get('selected_shipping_address')
-        selected_billing_address=form.cleaned_data.get('selected_billing_address')
+        direccion_de_entrega_seleccionada=form.cleaned_data.get('direccion_de_entrega_seleccionada')
+        direccion_de_pago_seleccionada=form.cleaned_data.get('direccion_de_pago_seleccionada')
 
-        if selected_shipping_address:
-            order.shipping_address=selected_shipping_address
+        if direccion_de_entrega_seleccionada:
+            order.direccion_de_entrega=direccion_de_entrega_seleccionada
         else:
             address=Address.objects.create(
-                address_type='S',
+                tipo_de_direccion='S',
                 user=self.request.user,
-                address_line_1=form.cleaned_data['shipping_address_line_1'],
-                address_line_2=form.cleaned_data['shipping_address_line_2'],
-                zip_code=form.cleaned_data['shipping_zip_code'],
-                city=form.cleaned_data['shipping_city'],
+                direccion_1=form.cleaned_data['direccion_de_entrega_1'],
+                direccion_2=form.cleaned_data['direccion_de_entrega_2'],
+                codigo_postal=form.cleaned_data['codigo_postal'],
+                ciudad=form.cleaned_data['ciudad'],
             )
 
-            order.shipping_address=address
+            order.direccion_de_pago=address
 
-        if selected_billing_address:
-            order.billing_address=selected_billing_address
+        if direccion_de_pago_seleccionada:
+            order.direccion_de_pago=direccion_de_pago_seleccionada
         else:
             address=Address.objects.create(
-                address_type='B',
+                tipo_de_direccion='B',
                 user=self.request.user,
-                address_line_1=form.cleaned_data['billing_address_line_1'],
-                address_line_2=form.cleaned_data['billing_address_line_2'],
-                zip_code=form.cleaned_data['billing_zip_code'],
-                city=form.cleaned_data['billing_city'],
+                direccion_1=form.cleaned_data['direccion_de_pago_1'],
+                direccion_2=form.cleaned_data['direccion_de_pago_2'],
+                codigo_postal=form.cleaned_data['codigo_postal'],
+                ciudad=form.cleaned_data['ciudad'],
             )
 
-            order.billing_address=address
+            order.direccion_de_pago=address
         order.save()
         messages.info(self.request, "Tus direcciones fueron agregadas correctamente")
         return super(CheckoutView, self).form_valid(form)

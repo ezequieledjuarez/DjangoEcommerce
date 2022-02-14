@@ -10,11 +10,11 @@ from .models import (
 
 class AddressAdmin(admin.ModelAdmin):
     list_display=[
-        'address_line_1',
-        'address_line_2',
-        'zip_code',
-        'city',
-        'address_type',
+        'direccion_1',
+        'direccion_2',
+        'codigo_postal',
+        'ciudad',
+        'tipo_de_direccion',
     ]
 
 admin.site.register(Product)
