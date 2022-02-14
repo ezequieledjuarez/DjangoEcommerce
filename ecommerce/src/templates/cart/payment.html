@@ -77,7 +77,7 @@
     const paymentInfo=document.getElementById('paymentInfo');
 
     function toggleLoader(on){
-        loader.style.display= on === true ? "block" : none;
+        loader.style.display= on === true ? "block" : "none";
         paymentInfo.style.display = on === true ? "none" : "block"; 
     }
 
@@ -99,9 +99,8 @@
     const csrftoken = getCookie('csrftoken');
 
         function sendOrderConfirmed(){
-            return fetch("{ url 'cart:confirm-order %%}", {
-                method: "post",
-                body: JSON.stringify(paymentInfo),
+            return fetch("/cart/confirm-order/", {
+                method: "POST",
                 headers:{
                     "Content-Type":"application/json",
                     "X-CSRFToken":csrftoken
@@ -123,7 +122,7 @@
                 toggleLoader(true);
                 return actions.order.capture().then(function(details) {
                     sendOrderConfirmed(details).then(res => {
-                        const alterSuccess = document.getElementById('alterSuccess');
+                        const alterSuccess = document.getElementById('alertSuccess');
                         alertSuccess.style.display="block"
                         toggleLoader(false);
                         setTimeout(function(){  
@@ -133,7 +132,7 @@
                 })
                 .catch(err => {
                     console.log(err)
-                    const alterFailure = document.getElementById('alterFailure');
+                    const alterFailure = document.getElementById('alertFailure');
                     alertFailure.style.display="block";
                 }).finally(()=> toggleLoader(false));
                
