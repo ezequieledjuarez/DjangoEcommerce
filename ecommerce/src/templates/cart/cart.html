@@ -26,7 +26,7 @@
                                 <th>Producto</th>
                                 <th>Precio</th>
                                 <th>Cantidad</th>
-                                <th>Total</th>
+                                <th>Total(IVA incluido)</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -71,7 +71,7 @@
                                 <td colspan="6">
                                     No tenes productos en tu carrito.
                                     <a href="{ % url: 'cart:product-list' %}">
-                                        Segui comprando.
+                                        Seguí comprando.
                                     </a>
                                 </td>
                             </tr>
@@ -88,7 +88,7 @@
                     <div class="row mb-5"></div>
                     <div class="col-md-12">
                         <a class="btn btn-outline-primary btn-sm btn-block" href="{% url 'cart:product-list' %}">
-                            Continue shopping</a>
+                            Continuar comprando</a>
                     </div>
                 </div>
             </div>
@@ -97,7 +97,7 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-12 text-right border-bottom mb-5">
-                                <div class="text-black h4 text-uppercase">Cart totals</div>
+                                <div class="text-black h4 text-uppercase">Total en el carrito</div>
                             </div>
                         </div>
 
@@ -112,7 +112,7 @@
 
                         <div class="row mb-5">
                             <div class="col-md-6">
-                                <span class="text-black">Total</span>
+                                <span class="text-black">Total(IVA incluido)</span>
                             </div>
                             <div class="col-md-6 text-right">
                                 <strong class="text-black">${{order.get_total}}</strong>

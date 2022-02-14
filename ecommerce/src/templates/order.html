@@ -20,7 +20,7 @@
                             <thead>
                                 <tr>
                                     <th>Producto</th>
-                                    <th>Total</th>
+                                    <th>Total(IVA incluido)</th>
                                 </tr>
                                 <tbody>
                                     {% for item in order.items.all %}
@@ -35,7 +35,7 @@
                                         <td>${{ order.get_subtotal }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Total (IVA agregado)</td>
+                                        <td>Total (IVA incluido)</td>
                                         <td>${{order.get_total}}</td>
                                     </tr>
                                 </tbody>
