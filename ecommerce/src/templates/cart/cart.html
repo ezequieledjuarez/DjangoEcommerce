@@ -63,7 +63,7 @@
                                     $ {{ item.get_total_item_price }}
                                 </td>
                                 <td>
-                                    <a href="{% url 'cart:remove-from-cart' item.id %}" class="btn btn-primary btn-sm">Remove</a>
+                                    <a href="{% url 'cart:remove-from-cart' item.id %}" class="btn btn-danger btn-sm">Quitar producto</a>
                                 </td>
                             </tr>
                             {% empty %}

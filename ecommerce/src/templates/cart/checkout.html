@@ -37,27 +37,29 @@
                 {% csrf_token %}
                 <div class="row">
                    <div class="col-md-6 mb-md-0">
-                       <h2 class="h3 mb-3 text-black text-center">Billing Details</h2>
+                       <h2 class="h3 mb-3 text-black text-center">Detalles de pago</h2>
                        <hr/>
                        <div class="p-2 p-lg-2">
                            {{ form|crispy}}
                        </div>
                        <div class="form-group">
-                           <button type="submit" class="btn btn-success btn-lg py-3 btn-block">
-                               Proceed to payment
-                           </button>
+                        <form style="display: inline" action="{% url 'cart:confirm-order' %}" method="post">
+                            <button type="submit" class="btn btn-success btn-lg py-3 btn-block">
+                                Procede al pago
+                            </button>
+                          </form>
                        </div>
                    </div>
                    <div>
                         <div class="com-md-6">
                             <div class="row mb-5"></div>
                             <div class="col-md-12">
-                                <h2 class="h3 mb-3 text-black text-center">Your Order</h2>
+                                <h2 class="h3 mb-3 text-black text-center">Tu orden</h2>
                                 <hr/>
                                 <div class="p-3 p-lg-5">
                                     <table class="table site-block-order-table mb-5">
                                         <thead>
-                                            <th>Product</th>                                    
+                                            <th>Producto</th>                                    
                                             <th>Total</th>
                                         </thead>
                                         <tbody>
