@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     
     'core',
 
+    'paypal',
+    'paypalcheckoutsdk'
+
 ]
 
 DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')

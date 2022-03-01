@@ -1,17 +1,32 @@
 import datetime
 import json
-from django.shortcuts import redirect, render
-from django.views import generic
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.contrib import messages
-from django.conf import settings
-from django.http import JsonResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
+import sys
+import unicodedata 
 
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.views import generic
+
+from src.app.settings import PAYPAL_CLIENT_ID, PAYPAL_SECRET_KEY
+
+from .forms import AddressForm, AddToCartForm
+from .models import Address, Order, OrderItem, Payment, Product
 from .utils import get_or_set_order_session
-from .models import Product,OrderItem,Order, OrderItem, Address, Payment,Order
-from .forms import AddToCartForm,AddressForm
+
+from paypalcheckoutsdk.core import PayPalHttpClient, SandboxEnvironment
+from paypalcheckoutsdk.orders import OrdersGetRequest, OrdersCaptureRequest
+import environ
+
+env = environ.Env()
+
+environ.Env().read_env()
+
+cart_summary = "cart:summary"
+
 
 class ProductListView(generic.ListView):
     template_name='cart/product_list.html'
@@ -25,7 +40,7 @@ class ProductDetailView(generic.FormView):
         return get_object_or_404(Product, slug=self.kwargs["slug"])
 
     def get_success_url(self):
-        return reverse("cart:summary")
+        return reverse(cart_summary)
 
 
     def get_form_kwargs(self):
@@ -77,7 +92,7 @@ class IncreaseQuantityView(generic.View):
         order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
         order_item.quantity += 1
         order_item.save()
-        return redirect("cart:summary")
+        return redirect("cart_summary")
 
 class DecreaseQuantityView(generic.View):
     def get(self, request, *args, **kwargs):
@@ -85,17 +100,17 @@ class DecreaseQuantityView(generic.View):
 
         if order_item.quantity <=1:
             order_item.delete()
-            return redirect("cart:summary")
+            return redirect("cart_summary")
         else:
             order_item.quantity -= 1
             order_item.save()
-            return redirect("cart:summary")
+            return redirect("cart_summary")
 
 class RemoveFromCartView(generic.View):
     def get(self, request, *args, **kwargs):
         order_item=get_object_or_404(OrderItem, id=kwargs['pk'])
         order_item.delete()
-        return redirect("cart:summary")
+        return redirect("cart_summary")
 
 class CheckoutView(generic.FormView):
     template_name='cart/checkout.html'
@@ -160,22 +175,30 @@ class PaymentView(generic.TemplateView):
         context['CALLBACK_URL']= self.request.build_absolute_uri(reverse("cart:thank-you"))
         return context
 
-
 class ConfirmOrderView(generic.View):    
     def post(self, request, *args, **kwargs):
-        order=get_or_set_order_session(request)
+        order=get_or_set_order_session(request) 
         body= json.loads(request.body)
+        order_id= body ['orderID']
+        detail  = GetOrder().get_order(order_id)
+        trx = CaptureOrder().capture_order(order_id, debug=False)
         payment = Payment.objects.create(
             order=order,
             succesful=True,
-            raw_response=json.dumps(body),
-            amount=float(body["purchase_units"][0]["amount"]["value"]),
+            raw_Response= str(order_id),
+            amount=float(detail.result["purchase_units"][0]["amount"]["value"]),
             payment_method='PayPal'
         ),
         order.ordered=True
         order.ordered_date=datetime.date.today()
         order.save()
-        return JsonResponse({"data": "Success"})
+
+        data = {
+            "id" : f"{trx.result.id}",
+            "status": f"{trx.result.status}"
+        }
+
+        return JsonResponse(data)
 
 class ThankYouView(generic.TemplateView):
     template_name='cart/thanks.html'
@@ -184,3 +207,46 @@ class OrderDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'order.html'
     queryset = Order.objects.all()
     context_object_name='order'
+
+class PayPalClient:
+    def __init__(self):
+        self.client_id= PAYPAL_CLIENT_ID
+        self.client_secret= PAYPAL_SECRET_KEY
+
+        self.enviroment = SandboxEnvironment(client_id=self.client_id, client_secret=self.client_secret)
+        self.client=PayPalHttpClient(self.enviroment)
+
+    def object_to_json(self, json_data):
+        result = {}
+        if sys.version_info[0]<3:
+            itr=json_data.__dict__.iteritems()
+        else:
+            itr=json_data.__dict__.items()
+        for key,value in itr:
+            if key.startswith("__"):
+                continue
+        result[key]=self.array_to_json_array(value) if isinstance(value,list)else\
+               self.object_to_json(value) if not self.is_primittive(value) else value
+        return result
+
+    def array_to_json_array(self, json_array):
+        result = []
+        if isinstance(json_array, list):
+            for item in json_array:
+                result.append(self.object_to_json(item)if not self.is_primittive(item)\
+                    else self.array_to_json_array(item) if isinstance(item, list) else item)
+    
+    def is_primittive(self,data):
+        return isinstance(data, str) or isinstance(data,unicodedata) or isinstance(data,int)
+        
+class GetOrder(PayPalClient):
+    def get_order(self, order_id):
+        request=OrdersGetRequest(order_id)
+        response=self.client.execute(request)
+        return response
+
+class CaptureOrder(PayPalClient):
+    def capture_order(self, order_id, debug=True):
+        request = OrdersCaptureRequest(order_id)
+        response= self.client.execute(request)
+        return response

@@ -112,6 +112,11 @@ class Order(models.Model):
         total=self.get_raw_total()
         return "{:.2f}".format(total/100)
 
+    def get_raw_total_usd(self):
+        total = self.get_raw_total() * 0.0093
+        return "{:.2f}".format(total/100)
+
+
 class Payment(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE, related_name='payments')
     payment_method=models.CharField(max_length=20, choices=(
